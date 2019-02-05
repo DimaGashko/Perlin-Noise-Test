@@ -9,6 +9,7 @@ const config = {
    height: 400,
    bend: 100,
    mobility: 0.25,
+   fill: true,
 }
 
 const canvas = <HTMLCanvasElement>document.querySelector('.canvas');
@@ -26,9 +27,9 @@ start();
 
 (<any>window).perlinNoise = perlinNoise;
 
-function start() { 
+function start() {
 
-   requestAnimationFrame(function animationFunc() { 
+   requestAnimationFrame(function animationFunc() {
       time += config.speed;
 
       clear();
@@ -40,20 +41,45 @@ function start() {
 
 let coords = new Vector(0, 0);
 
-function draw() {  
-   ctx.save();
-   //ctx.translate(size.x / 2, size.y / 2);
+function draw() {
+   const vertices = getVertices();
 
-   const count = size.x;
-   
-   for (let i = 0; i < count; i++) {
-      const h = perlinNoise(time + i / config.bend, time * config.mobility, 0) * config.height;
+   ctx.beginPath();
+   ctx.moveTo(vertices[0].x, vertices[0].y);
 
-      ctx.fillRect(i, size.y - h, 1, h);
+   for (let i = 0; i < vertices.length; i++) {
+      ctx.lineTo(vertices[i].x, vertices[i].y);
    }
 
-   ctx.restore();
+   ctx.closePath();
+
+   if (config.fill) {
+      ctx.fill();
+
+   } else {
+      ctx.stroke();
+   }
 }
+
+function getVertices(): Vector[] {
+   const len = size.x;
+   const vertices: Vector[] = new Array(len + 1);
+
+   for (let i = 0; i < len; i++) {
+      const dx = time + i / config.bend;
+      const dy = time * config.mobility;
+
+      const h = perlinNoise(dx, dy, 0) * config.height;
+
+      vertices[i] = new Vector(i, size.y - h);
+   }
+
+   // Нижние точки
+   vertices[len] = new Vector(size.x, size.y);
+   vertices[len + 1] = new Vector(0, size.y);
+
+   return vertices;
+};
 
 function onResize() {
    updateSize();
@@ -73,12 +99,12 @@ function initEvents() {
    });
 }
 
-function setStartStyle() { 
-   ctx.fillStyle = '#4CAF50';
+function setStartStyle() {
+   ctx.fillStyle = '#33691E';
    ctx.strokeStyle = '#4CAF50';
 }
 
-function clear() { 
+function clear() {
    ctx.clearRect(0, 0, size.x, size.y);
 }
 
@@ -89,4 +115,5 @@ function initGui() {
    gui.add(config, 'height', 100, 1000);
    gui.add(config, 'bend', 50, 500);
    gui.add(config, 'mobility', 0, 1);
+   gui.add(config, 'fill', true);
 }
