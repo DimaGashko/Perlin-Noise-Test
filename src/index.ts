@@ -6,8 +6,9 @@ import './styles/index.sass';
 
 const config = {
    speed: 0.01,
-   value: 100,
    height: 400,
+   bend: 100,
+   mobility: 0.25,
 }
 
 const canvas = <HTMLCanvasElement>document.querySelector('.canvas');
@@ -46,7 +47,7 @@ function draw() {
    const count = size.x;
    
    for (let i = 0; i < count; i++) {
-      const h = perlinNoise(time + i / config.value, 0, 0) * config.height;
+      const h = perlinNoise(time + i / config.bend, time * config.mobility, 0) * config.height;
 
       ctx.fillRect(i, size.y - h, 1, h);
    }
@@ -85,6 +86,7 @@ function initGui() {
    const gui = new dat.GUI();
 
    gui.add(config, 'speed', 0, 0.2);
-   gui.add(config, 'value', 25, 500);
    gui.add(config, 'height', 100, 1000);
+   gui.add(config, 'bend', 50, 500);
+   gui.add(config, 'mobility', 0, 1);
 }
