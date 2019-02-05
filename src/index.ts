@@ -5,7 +5,7 @@ import * as dat from 'dat.gui';
 import './styles/index.sass';
 
 const config = {
-   k: 2,
+   k: 100,
 }
 
 const canvas = <HTMLCanvasElement>document.querySelector('.canvas');
@@ -39,15 +39,16 @@ let coords = new Vector(0, 0);
 
 function draw() {  
    ctx.save();
+   //ctx.translate(size.x / 2, size.y / 2);
 
-   ctx.translate(size.x / 2, size.y / 2);
+
+   const count = size.x;
    
-   coords = new Vector(
-      (perlinNoise(time, 0, 0) - 0.5) * 500,
-      (perlinNoise(time * 2, 0, 0) - 0.5) * 500
-   );
+   for (let i = 0; i < count; i++) {
+      const h = perlinNoise(i / config.k, 0, 0) * 500;
 
-   ctx.fillRect(coords.x, coords.y, 1, 1);
+      ctx.fillRect(i, size.y - h, 1, h);
+   }
 
    ctx.restore();
 }
@@ -82,5 +83,5 @@ function clear() {
 function initGui() {
    const gui = new dat.GUI();
 
-   gui.add(config, 'k', -5, 5);
+   gui.add(config, 'k', 1, 500);
 }
