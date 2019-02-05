@@ -5,6 +5,7 @@ import * as dat from 'dat.gui';
 import './styles/index.sass';
 
 const config = {
+   speed: 0.01,
    k: 100,
 }
 
@@ -26,7 +27,7 @@ start();
 function start() { 
 
    requestAnimationFrame(function animationFunc() { 
-      time += 0.001;
+      time += config.speed;
 
       clear();
       draw();
@@ -41,11 +42,10 @@ function draw() {
    ctx.save();
    //ctx.translate(size.x / 2, size.y / 2);
 
-
    const count = size.x;
    
    for (let i = 0; i < count; i++) {
-      const h = perlinNoise(i / config.k, 0, 0) * 500;
+      const h = perlinNoise(time + i / config.k, 0, 0) * 500;
 
       ctx.fillRect(i, size.y - h, 1, h);
    }
@@ -83,5 +83,6 @@ function clear() {
 function initGui() {
    const gui = new dat.GUI();
 
-   gui.add(config, 'k', 1, 500);
+   gui.add(config, 'speed', 0, 0.2);
+   gui.add(config, 'k', 25, 500);
 }
