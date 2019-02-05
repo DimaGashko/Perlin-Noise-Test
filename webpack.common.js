@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const merge = require('webpack-merge');
 const path = require('path');
 
 const autoprefixer = require('autoprefixer');
@@ -8,30 +7,15 @@ const cssnano = require('cssnano');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const htmlWebpackPluginBaseConfig = {
-   favicon: "./src/img/favicon.png",
-   minify: {
-      collapseWhitespace: true,
-      removeComments: true,
-   },
-}
-
 module.exports = {
    mode: 'development',
    entry: {
-      page1: './src/pages/page1/index.ts',
-      page2: './src/pages/page2/index.ts',
-      page3: './src/pages/page3/index.ts',
+      app: './src/index.ts',
    },
    output: {
-      filename: '[name]/app.[contenthash].js',
+      filename: '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist'),
-      publicPath: '/',
-   },
-   optimization: {
-      splitChunks: {
-         chunks: 'all'
-      }
+      //publicPath: '/',
    },
    module: {
       rules: [{
@@ -97,21 +81,16 @@ module.exports = {
       extensions: ['.tsx', '.ts', '.js']
    },
    plugins: [
-      new HtmlWebpackPlugin(merge(htmlWebpackPluginBaseConfig, {
-         filename: 'page1/index.html',
-         template: './src/pages/page1/index.pug',
-         chunks: ['page1'],
-      })),
-      new HtmlWebpackPlugin(merge(htmlWebpackPluginBaseConfig, {
-         filename: 'page2/index.html',
-         template: './src/pages/page2/index.pug',
-         chunks: ['page2'],
-      })),
-      new HtmlWebpackPlugin(merge(htmlWebpackPluginBaseConfig, {
-         filename: 'page3/index.html',
-         template: './src/pages/page3/index.pug',
-         chunks: ['page3'],
-      })),
+      new HtmlWebpackPlugin({
+         template: './src/templates/index.pug',
+         favicon: "./src/img/favicon.png",
+         minify: {
+            collapseWhitespace: true,
+            removeComments: true,
+         },
+
+         inlineSource: '.(js|css)$'
+      }),
       new webpack.HashedModuleIdsPlugin(),
       new MiniCssExtractPlugin({
          filename: "[name].[contenthash].css",
