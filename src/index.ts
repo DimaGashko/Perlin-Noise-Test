@@ -1,5 +1,6 @@
 import './styles/index.sass';
 import Vector from './components/Vector/Vector';
+import perlinNoise from './function/perlin-noise';
 
 const canvas = <HTMLCanvasElement>document.querySelector('.canvas');
 const ctx = canvas.getContext('2d');
@@ -10,10 +11,23 @@ updateSize();
 initEvents();
 setStartStyle();
 
-draw();
+start();
 
-function draw() {
-   ctx.fillRect(-100, -100, 200, 200);
+(<any>window).perlinNoise = perlinNoise;
+
+function start() { 
+   requestAnimationFrame(function animationFunc(time: number) { 
+      draw(time);
+
+      requestAnimationFrame(animationFunc);
+   });
+}
+
+function draw(time: number) {
+   const x = (perlinNoise(time, 0, 0) - 0.5) * 500;
+   const y = (perlinNoise(1, time, 0) - 0.5) * 500;
+
+   ctx.fillRect(x, y, 1, 1);
 }
 
 function onResize() {
@@ -41,6 +55,6 @@ function initEvents() {
 }
 
 function setStartStyle() { 
-   ctx.fillStyle = '#bdbdbd';
-   ctx.strokeStyle = '#bdbdbd';
+   ctx.fillStyle = '#4CAF50';
+   ctx.strokeStyle = '#4CAF50';
 }
