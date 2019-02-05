@@ -8,6 +8,7 @@ let size = new Vector(100, 100);
 
 updateSize();
 initEvents();
+setStartStyle();
 
 draw();
 
@@ -39,3 +40,7 @@ function initEvents() {
    });
 }
 
+function setStartStyle() { 
+   ctx.fillStyle = '#bdbdbd';
+   ctx.strokeStyle = '#bdbdbd';
+}
