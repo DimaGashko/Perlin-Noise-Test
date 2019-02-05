@@ -1,6 +1,12 @@
-import './styles/index.sass';
 import Vector from './components/Vector/Vector';
 import perlinNoise from './function/perlin-noise';
+import * as dat from 'dat.gui';
+
+import './styles/index.sass';
+
+const config = {
+   k: 2,
+}
 
 const canvas = <HTMLCanvasElement>document.querySelector('.canvas');
 const ctx = canvas.getContext('2d');
@@ -10,6 +16,7 @@ let size = new Vector(100, 100);
 updateSize();
 initEvents();
 setStartStyle();
+initGui();
 
 start();
 
@@ -17,22 +24,28 @@ start();
 
 function start() { 
    requestAnimationFrame(function animationFunc(time: number) { 
+      time /= 1000;
+
       draw(time);
 
       requestAnimationFrame(animationFunc);
    });
 }
 
-function draw(time: number) {
-   const x = (perlinNoise(time, 0, 0) - 0.5) * 500;
-   const y = (perlinNoise(1, time, 0) - 0.5) * 500;
+let coords = new Vector(0, 0);
 
-   ctx.fillRect(x, y, 1, 1);
+function draw(t: number) {
+   coords = new Vector(
+      (perlinNoise(t, 0, 0) - 0.5) * 500,
+      (perlinNoise(t * 2, 0, 0) - 0.5) * 500
+   );
+
+   ctx.fillRect(coords.x, coords.y, 1, 1);
 }
 
 function onResize() {
    updateSize();
-   draw();
+   setStartStyle();
 }
 
 function updateSize() {
@@ -57,4 +70,10 @@ function initEvents() {
 function setStartStyle() { 
    ctx.fillStyle = '#4CAF50';
    ctx.strokeStyle = '#4CAF50';
+}
+
+function initGui() {
+   const gui = new dat.GUI();
+
+   gui.add(config, 'k', -5, 5);
 }
