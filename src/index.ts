@@ -12,6 +12,7 @@ const canvas = <HTMLCanvasElement>document.querySelector('.canvas');
 const ctx = canvas.getContext('2d');
 
 let size = new Vector(100, 100);
+let time = 0;
 
 updateSize();
 initEvents();
@@ -23,10 +24,12 @@ start();
 (<any>window).perlinNoise = perlinNoise;
 
 function start() { 
-   requestAnimationFrame(function animationFunc(time: number) { 
-      time /= 1000;
 
-      draw(time);
+   requestAnimationFrame(function animationFunc() { 
+      time += 0.001;
+
+      clear();
+      draw();
 
       requestAnimationFrame(animationFunc);
    });
@@ -34,13 +37,19 @@ function start() {
 
 let coords = new Vector(0, 0);
 
-function draw(t: number) {
+function draw() {  
+   ctx.save();
+
+   ctx.translate(size.x / 2, size.y / 2);
+   
    coords = new Vector(
-      (perlinNoise(t, 0, 0) - 0.5) * 500,
-      (perlinNoise(t * 2, 0, 0) - 0.5) * 500
+      (perlinNoise(time, 0, 0) - 0.5) * 500,
+      (perlinNoise(time * 2, 0, 0) - 0.5) * 500
    );
 
    ctx.fillRect(coords.x, coords.y, 1, 1);
+
+   ctx.restore();
 }
 
 function onResize() {
@@ -53,12 +62,6 @@ function updateSize() {
 
    canvas.width = size.x;
    canvas.height = size.y;
-
-   setStartTransforms();
-}
-
-function setStartTransforms() {
-   ctx.translate(size.x / 2, size.y / 2);
 }
 
 function initEvents() {
@@ -70,6 +73,10 @@ function initEvents() {
 function setStartStyle() { 
    ctx.fillStyle = '#4CAF50';
    ctx.strokeStyle = '#4CAF50';
+}
+
+function clear() { 
+   ctx.clearRect(0, 0, size.x, size.y);
 }
 
 function initGui() {
