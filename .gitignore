@@ -1,7 +1,7 @@
 # name.~docx, name.~vsdx etc.
 /**/*.~*
 
-**/*.mp4
+/screenshots/video/PerlinNoise.mp4
 
 # compiled output
 /dist
