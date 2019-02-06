@@ -4,7 +4,7 @@
 **/*.mp4
 
 # compiled output
-# /dist
+/dist
 /webpack-analyze
 
 # dependencies
